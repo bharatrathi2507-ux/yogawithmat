@@ -1119,11 +1119,11 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Your Name</label>
-                                    <input type="text" placeholder="Priya Sharma" required />
+                                    <input type="text" id="fb-name" placeholder="Priya Sharma" required />
                                 </div>
                                 <div class="form-group">
                                     <label>Class Attended</label>
-                                    <select required>
+                                    <select id="fb-class" required>
                                         <option value="" disabled selected>Select a class…</option>
                                         <option>Hatha Yoga</option>
                                         <option>Vinyasa Flow</option>
@@ -1137,18 +1137,18 @@
                             <div class="form-group">
                                 <label>Your Rating</label>
                                 <div class="star-rating">
-                                    <input type="radio" name="rating" id="s5" value="5"><label for="s5">★</label>
-                                    <input type="radio" name="rating" id="s4" value="4"><label for="s4">★</label>
-                                    <input type="radio" name="rating" id="s3" value="3"><label for="s3">★</label>
-                                    <input type="radio" name="rating" id="s2" value="2"><label for="s2">★</label>
-                                    <input type="radio" name="rating" id="s1" value="1"><label for="s1">★</label>
+                                    <input type="radio" name="rating" id="s5" value="5 Stars"><label for="s5">★</label>
+                                    <input type="radio" name="rating" id="s4" value="4 Stars"><label for="s4">★</label>
+                                    <input type="radio" name="rating" id="s3" value="3 Stars"><label for="s3">★</label>
+                                    <input type="radio" name="rating" id="s2" value="2 Stars"><label for="s2">★</label>
+                                    <input type="radio" name="rating" id="s1" value="1 Star"><label for="s1">★</label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Your Feedback</label>
-                                <textarea placeholder="Share what this practice meant to you…" required></textarea>
+                                <textarea id="fb-message" placeholder="Share what this practice meant to you…" required></textarea>
                             </div>
-                            <button type="submit" class="btn-primary form-submit">Share Feedback</button>
+                            <button type="submit" class="btn-primary form-submit">Share Feedback via WhatsApp</button>
                         </form>
                         <div class="form-success" id="feedback-success">
                             <div class="check">🙏</div>
@@ -1168,16 +1168,16 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Your Name</label>
-                                    <input type="text" placeholder="Rohan Mehta" required />
+                                    <input type="text" id="c-name" placeholder="Rohan Mehta" required />
                                 </div>
                                 <div class="form-group">
                                     <label>Phone / WhatsApp</label>
-                                    <input type="tel" placeholder="+91 98765 43210" />
+                                    <input type="tel" id="c-phone" placeholder="+91 98765 43210" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>What are you interested in?</label>
-                                <select required>
+                                <select id="c-interest" required>
                                     <option value="" disabled selected>Choose a topic…</option>
                                     <option>Joining a class</option>
                                     <option>Private session enquiry</option>
@@ -1188,9 +1188,9 @@
                             </div>
                             <div class="form-group">
                                 <label>Your Message</label>
-                                <textarea placeholder="Tell us a little about what you're looking for…" required></textarea>
+                                <textarea id="c-message" placeholder="Tell us a little about what you're looking for…" required></textarea>
                             </div>
-                            <button type="submit" class="btn-primary form-submit">Send Message</button>
+                            <button type="submit" class="btn-primary form-submit">Send Message via WhatsApp</button>
                         </form>
                         <div class="form-success" id="contact-success">
                             <div class="check">🌿</div>
@@ -1254,6 +1254,8 @@
     </a>
 
     <script>
+        const whatsappNumber = "919860642732";
+
         const nav = document.getElementById('main-nav');
         window.addEventListener('scroll', () => {
             nav.classList.toggle('scrolled', window.scrollY > 60);
@@ -1303,23 +1305,54 @@
             });
         });
 
+        // WhatsApp Dynamic Feedback Form Delivery
         const feedbackForm = document.getElementById('feedback-form');
         const feedbackSuccess = document.getElementById('feedback-success');
         if (feedbackForm && feedbackSuccess) {
             feedbackForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                
+                const name = document.getElementById('fb-name').value;
+                const className = document.getElementById('fb-class').value;
+                const message = document.getElementById('fb-message').value;
+                
+                // Extract checked star rating values
+                const ratingEl = document.querySelector('input[name="rating"]:checked');
+                const rating = ratingEl ? ratingEl.value : 'Not Rated';
+
+                // Format the text elegantly for WhatsApp reading
+                const textMessage = `✨ *New Web Feedback Received!* ✨\n\n👤 *Name:* ${name}\n🧘 *Class Attended:* ${className}\n⭐️ *Rating:* ${rating}\n\n💬 *Feedback:* "${message}"`;
+                const encodedMessage = encodeURIComponent(textMessage);
+                
                 feedbackForm.style.display = 'none';
                 feedbackSuccess.style.display = 'block';
+
+                // Automatically trigger the redirection
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
             });
         }
 
+        // WhatsApp Dynamic Contact Form Delivery
         const contactForm = document.getElementById('contact-form');
         const contactSuccess = document.getElementById('contact-success');
         if (contactForm && contactSuccess) {
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                
+                const name = document.getElementById('c-name').value;
+                const phone = document.getElementById('c-phone').value || 'Not provided';
+                const interest = document.getElementById('c-interest').value;
+                const message = document.getElementById('c-message').value;
+
+                // Format the text elegantly for WhatsApp reading
+                const textMessage = `🌿 *New Website Inquiry* 🌿\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🎯 *Interested In:* ${interest}\n\n💬 *Message:* "${message}"`;
+                const encodedMessage = encodeURIComponent(textMessage);
+                
                 contactForm.style.display = 'none';
                 contactSuccess.style.display = 'block';
+
+                // Automatically trigger the redirection
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
             });
         }
 
